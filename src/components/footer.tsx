@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { PhoneIcon, MapPinIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Alert from '@mui/material/Alert';
+import { PageInfo } from '../../typings';
+import { fetchPageInfo } from '../../utils/fetchPageInfo';
 
 type Props = {};
 
@@ -13,6 +15,7 @@ type State = {
 	email: string;
 	subject: string;
 	message: string;
+	pageInfo: PageInfo | undefined;
 };
 
 export default class Footer extends Component<Props, State> {
@@ -24,7 +27,13 @@ export default class Footer extends Component<Props, State> {
 			email: '',
 			subject: '',
 			message: '',
+			pageInfo: undefined,
 		};
+	}
+
+	async componentDidMount() {
+		let pageInfo = await fetchPageInfo();
+		this.setState({ pageInfo });
 	}
 
 	onFormName = (e: any) => {
@@ -89,15 +98,19 @@ export default class Footer extends Component<Props, State> {
 				<div className="space-y-6 mt-6 items-center">
 					<div className="flex items-center space-x-5 justify-center">
 						<PhoneIcon className="text-[#313bac] h-7 w-7 animate-pulse" />
-						<p className="text-2xl">+852 9149 7727</p>
+						<p className="text-2xl">
+							{this.state.pageInfo?.phoneNumber}
+						</p>
 					</div>
 					<div className="flex items-center space-x-5 justify-center">
 						<EnvelopeIcon className="text-[#313bac] h-7 w-7 animate-pulse" />
-						<p className="text-2xl">ayal.nogovitsyn@gmail.com</p>
+						<p className="text-2xl">{this.state.pageInfo?.email}</p>
 					</div>
 					<div className="flex items-center space-x-5 justify-center">
 						<MapPinIcon className="text-[#313bac] h-7 w-7 animate-pulse" />
-						<p className="text-2xl">Hong Kong</p>
+						<p className="text-2xl">
+							{this.state.pageInfo?.address}
+						</p>
 					</div>
 				</div>
 
